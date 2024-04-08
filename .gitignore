@@ -1,0 +1,15 @@
+# Ignore Terraform files
+**/.terraform/
+*.tfstate
+*.tfstate.lock
+*.tfstate.backup
+*.tfstate.*.backup
+*.tfvars
+terraform.tfstate
+terraform.tfstate.backup
+.terraformrc
+terraform.rc
+terraform.log
+.terraform.lock.hcl
+.terraform/plugins/
+.terraform/providers/
