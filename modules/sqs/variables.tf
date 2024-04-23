@@ -39,3 +39,8 @@ variable "dead_letter_queue_name" {
   description = "Name of the dead letter queue."
   default = ""
 }
+
+variable "max_receive_count" {
+  type = number
+  description = "The number of retry attempts that the consumer will have to process the message. Once limit is hit, message is sent to the DLQ."
+}
