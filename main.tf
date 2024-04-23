@@ -55,3 +55,58 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
     filter_suffix = ""
   }
 }
+
+# Create the resize-my-images lambda function
+module "resize_my_image_lambda" {
+  source = "./modules/lambda_function"
+
+  function_name = var.image_resize_lambda_name
+  lambda_function_code_path = "${var.lambda_scripts_folder_name}/${var.image_resize_lambda_name}"
+  runtime = "python3.11"
+  handler = "lambda_function.lambda_handler"
+  architectures = ["x86_64"]
+  timeout = 180
+  memory_size = 2048
+  lambda_policy_document = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowLogEvents",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:*"
+    },
+    {
+      "Sid": "AllowGetObject",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "${module.ingestion_images_bucket.s3_bucket_arn}",
+        "${module.ingestion_images_bucket.s3_bucket_arn}/*"
+      ]
+    },
+    {
+      "Sid": "AllowPutObject",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": [
+        "${module.resized_images_bucket.s3_bucket_arn}",
+        "${module.resized_images_bucket.s3_bucket_arn}/*"
+      ]
+    }
+  ]
+}
+EOF
+  environment_variables = {
+    "IMAGE_RESIZE_FACTOR" = "0.6"
+    "DESTINATION_BUCKET_NAME" = "${module.resized_images_bucket.s3_bucket_name}"
+  }
+}

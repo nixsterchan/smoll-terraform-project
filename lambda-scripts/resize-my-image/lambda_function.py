@@ -9,8 +9,13 @@ Dependencies:
     - TBC
 """
 import boto3
+import os
 
 s3 = boto3.resource('s3')
+
+# Retrieve environment variables
+IMAGE_RESIZE_FACTOR = float(os.environ['IMAGE_RESIZE_FACTOR'])
+DESTINATION_BUCKET_NAME = os.environ['DESTINATION_BUCKET_NAME'] 
 
 def lambda_handler(event, context):
    # Read object from S3
