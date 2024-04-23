@@ -7,3 +7,9 @@ resource "aws_sqs_queue" "queue" {
   delay_seconds = var.delay_seconds
   policy = var.sqs_policy_document
 }
+
+# Create a dead letter queue to link to the main queue if it is enabled for creation
+resource "aws_sqs_queue" "dead_letter_queue" {
+  count = var.create_dlq ? 1 : 0
+  name  = var.dead_letter_queue_name
+}

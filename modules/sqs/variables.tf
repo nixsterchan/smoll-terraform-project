@@ -27,3 +27,15 @@ variable "sqs_policy_document" {
   type = string
   description = "IAM policy document for the SQS queue"
 }
+
+variable "create_dlq" {
+  type = bool
+  description = "Used to determine if a DLQ should be created and attached to the SQS queue being created."
+  default = false
+}
+
+variable "dead_letter_queue_name" {
+  type = string
+  description = "Name of the dead letter queue."
+  default = ""
+}
