@@ -110,3 +110,14 @@ EOF
     "DESTINATION_BUCKET_NAME" = "${module.resized_images_bucket.s3_bucket_name}"
   }
 }
+
+# Sets up event source mapping between the queue_for_resize_my_image_lambda SQS queue to resize_my_image_lambda lambda function
+resource "aws_lambda_event_source_mapping" "event_source_mapping_to_processing_lambda" {
+  enabled = true
+  function_name = module.resize_my_image_lambda.lambda_function_arn
+  event_source_arn = module.queue_for_resize_my_image_lambda.queue_arn
+  batch_size = 1
+  scaling_config {
+    maximum_concurrency = 5
+  }
+}
