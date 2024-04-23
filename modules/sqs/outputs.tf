@@ -1,6 +1,6 @@
 output "queue_arn" {
   description = "Returns the ARN of the main SQS queue for any other module to reference."
-  value       = aws_sqs_queue.main_queue.arn
+  value       = aws_sqs_queue.queue.arn
 }
 
 output "dead_letter_queue_arn" {
